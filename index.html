@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aplikasi Kalkulator Pengurusan Hatchery PPBIL</title>
+
+  <!-- Tailwind CDN (untuk cepat) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    :root { --bg:#e2e8f0; --header:#0f3460; --card:#ffffff; }
+    html,body { height:100%; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .card { background:var(--card); border-radius:1rem; box-shadow:0 6px 18px rgba(2,6,23,0.08); }
+    .input-style { border:2px solid #cbd5e1; padding:0.6rem 0.75rem; border-radius:0.5rem; width:100%; }
+    .input-style:focus { outline:none; border-color:#4299e1; box-shadow:0 0 0 3px rgba(66,153,225,0.12); }
+    .result-value { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body class="p-4">
+
+  <!-- Header -->
+  <header class="header-section w-full py-6" style="background:var(--header); color:white;">
+    <div class="max-w-6xl mx-auto px-4">
+      <h1 class="text-2xl md:text-3xl font-extrabold flex items-center gap-3">
+        <i class="fas fa-calculator text-yellow-400"></i>
+        HATCHERY MANAGEMENT CALCULATOR
+      </h1>
+      <p class="text-sm mt-1 text-gray-200">Aplikasi Kiraan Operasi Pembenihan PPBIL Santubong (Siakap)</p>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 px-4">
+
+    <!-- Rotifer -->
+    <section id="rotifer-card" class="card p-6" aria-labelledby="rotifer-title">
+      <h2 id="rotifer-title" class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+        <i class="fas fa-seedling text-green-500"></i> 1. Kiraan Makanan Rotifer (gram/hari)
+      </h2>
+
+      <div class="space-y-3">
+        <label class="block text-sm font-medium">Kepadatan Rotifer (ind/ml)
+          <input id="density" type="number" inputmode="decimal" min="0" step="1" value="100" class="input-style mt-1" aria-describedby="density-help">
+        </label>
+        <p id="density-help" class="text-xs text-gray-500">Individu per ml (contoh 100 ind/ml).</p>
+
+        <label class="block text-sm font-medium">Isipadu Air (Liter)
+          <input id="volume" type="number" inputmode="decimal" min="0.1" step="0.1" value="5000" class="input-style mt-1">
+        </label>
+
+        <label class="block text-sm font-medium">Jenis Makanan & Kadar (gram per juta rotifer)
+          <select id="feedType" class="input-style mt-1" aria-label="Feed type">
+            <option value="0.3">Yeast (Yis) - 0.3 g per juta</option>
+            <option value="0.2">Sparkle - 0.2 g per juta</option>
+            <option value="0.6">Nanopaste - 0.6 g per juta</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="mt-5 bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+        <p class="text-xs text-gray-600 font-semibold">KEPERLUAN MAKANAN HARIAN</p>
+        <p id="rotifer-result" class="text-3xl font-extrabold text-green-700 result-value mt-1">0.00 <span class="text-base font-medium">gram</span></p>
+      </div>
+
+      <div class="mt-4 flex gap-2">
+        <button id="copy-rotifer" class="px-3 py-2 bg-blue-600 text-white rounded-md text-sm"><i class="fas fa-copy mr-2"></i>Salin</button>
+        <button id="download-rotifer" class="px-3 py-2 bg-green-600 text-white rounded-md text-sm"><i class="fas fa-download mr-2"></i>Muat Turun (CSV)</button>
+      </div>
+    </section>
+
+    <!-- Artemia -->
+    <section id="artemia-card" class="card p-6" aria-labelledby="artemia-title">
+      <h2 id="artemia-title" class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+        <i class="fas fa-egg text-yellow-500"></i> 2. Kiraan Kebutuhan Artemia Cysts (gram)
+      </h2>
+
+      <div class="space-y-3">
+        <label class="block text-sm font-medium">Jumlah Stok Larva (ekor)
+          <input id="artemiaStock" type="number" inputmode="numeric" min="1" step="1000" placeholder="500000" class="input-style mt-1">
+        </label>
+
+        <label class="block text-sm font-medium">Kadar Pemberian (nauplii/ekor/hari)
+          <input id="artemiaRate" type="number" inputmode="decimal" min="0.1" step="0.1" value="7" class="input-style mt-1">
+        </label>
+
+        <label class="block text-sm font-medium">Kecekapan Penetasan (juta nauplii per gram)
+          <input id="hatchEff" type="number" inputmode="decimal" min="0.01" step="0.01" value="0.25" class="input-style mt-1">
+          <p class="text-xs text-gray-500 mt-1">Contoh 0.25 = 0.25 juta (250,000 nauplii / gram)</p>
+        </label>
+      </div>
+
+      <div class="mt-5 bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+        <p class="text-xs text-gray-600 font-semibold">KEPERLUAN CYSTS HARIAN</p>
+        <p id="artemia-result" class="text-3xl font-extrabold text-green-700 result-value mt-1">0.00 <span class="text-base font-medium">gram</span></p>
+      </div>
+
+      <div class="mt-4 flex gap-2">
+        <button id="copy-artemia" class="px-3 py-2 bg-blue-600 text-white rounded-md text-sm"><i class="fas fa-copy mr-2"></i>Salin</button>
+        <button id="download-artemia" class="px-3 py-2 bg-green-600 text-white rounded-md text-sm"><i class="fas fa-download mr-2"></i>Muat Turun (CSV)</button>
+      </div>
+    </section>
+
+    <!-- Stocking -->
+    <section id="stock-card" class="card p-6" aria-labelledby="stock-title">
+      <h2 id="stock-title" class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+        <i class="fas fa-fish text-red-500"></i> 3. Kiraan Stok Larva/Benih (individu)
+      </h2>
+
+      <div class="space-y-3">
+        <label class="block text-sm font-medium">Isipadu Tangki
+          <input id="tankVolume" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="Contoh 10" class="input-style mt-1">
+        </label>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block text-sm font-medium">Unit Isipadu
+            <select id="unitConvert" class="input-style mt-1">
+              <option value="m3">Meter padu (m³)</option>
+              <option value="liter">Liter (L)</option>
+            </select>
+          </label>
+
+          <label class="block text-sm font-medium">Fasa Ikan
+            <select id="tankArea" class="input-style mt-1">
+              <option value="larva">Larva Awal (max 50 ind/L)</option>
+              <option value="benih">Benih/Juvenil (max 10 ind/L)</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="block text-sm font-medium">Kepadatan Sasaran (ind/L)
+          <input id="densityTarget" type="number" inputmode="decimal" min="1" step="1" value="30" class="input-style mt-1">
+        </label>
+      </div>
+
+      <div class="mt-5 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+        <p class="text-xs text-gray-600 font-semibold">JUMLAH STOK MAKSIMUM DISARANKAN</p>
+        <p id="stocking-result" class="text-3xl font-extrabold text-blue-700 result-value mt-1">0 <span class="text-base font-medium">ekor</span></p>
+      </div>
+    </section>
+
+    <!-- Chemical & Liming -->
+    <section id="chemical-card" class="card p-6" aria-labelledby="chemical-title">
+      <h2 id="chemical-title" class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+        <i class="fas fa-vial text-red-500"></i> 4. Kiraan Bahan Kimia & Kapur
+      </h2>
+
+      <!-- A. Chemicals -->
+      <div class="mb-6 border-b pb-4">
+        <h3 class="text-lg font-semibold mb-2">A. Klorin / Natrium Tiosulfat (gram)</h3>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block text-sm font-medium">Isipadu Air (L)
+            <input id="chemVolume" type="number" inputmode="decimal" min="0.1" step="0.1" value="1000" class="input-style mt-1">
+          </label>
+
+          <label class="block text-sm font-medium">Sasaran PPM
+            <input id="targetPPM" type="number" inputmode="decimal" min="0" step="0.1" value="10" class="input-style mt-1">
+          </label>
+        </div>
+
+        <div class="mt-4 bg-green-50 border-l-4 border-green-500 p-3 rounded">
+          <p class="text-xs text-gray-600 font-semibold">KEPERLUAN BAHAN KIMIA (g)</p>
+          <p id="chemical-result" class="text-2xl font-extrabold text-green-700 result-value mt-1">0.00 <span class="text-base font-medium">gram</span></p>
+        </div>
+      </div>
+
+      <!-- B. Liming -->
+      <div>
+        <h3 class="text-lg font-semibold mb-2">B. Kapur Kolam (tan)</h3>
+
+        <div class="space-y-3">
+          <label class="block text-sm font-medium">Saiz Kolam (Ha)
+            <input id="pondArea" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="1.0" class="input-style mt-1">
+          </label>
+
+          <label class="block text-sm font-medium">Jenis Tekstur Tanah
+            <select id="soilType" class="input-style mt-1">
+              <option value="liat">Tanah Liat (Clay)</option>
+              <option value="pasir">Tanah Berpasir (Sandy)</option>
+              <option value="biasa">Tanah Biasa (Loam/Silt)</option>
+            </select>
+          </label>
+
+          <label class="block text-sm font-medium">Bacaan pH Tanah
+            <input id="pH" type="number" inputmode="decimal" min="3.0" max="8.0" step="0.1" placeholder="4.5" class="input-style mt-1">
+          </label>
+        </div>
+
+        <div class="mt-4 bg-blue-50 border-l-4 border-blue-500 p-3 rounded">
+          <p class="text-xs text-gray-600 font-semibold">KEPERLUAN KAPUR (tan/Ha)</p>
+          <p id="liming-result" class="text-2xl font-extrabold text-blue-700 result-value mt-1">0.00 <span class="text-base font-medium">tan/Ha</span></p>
+          <p id="liming-total" class="text-xs mt-1 text-gray-500">Jumlah Kapur Keseluruhan: 0.00 tan</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="mt-8 text-center text-gray-500 text-sm">
+    Dibangunkan untuk Jabatan Perikanan Laut Sarawak (JPLS) - PPBIL Santubong
+  </footer>
+
+  <!-- Script: Kalkulator -->
+  <script>
+    const limingData = {
+      liat: { phRanges: [4.0,4.5,5.0,5.5,6.0], rates:[8.0,6.0,5.0,3.0,2.0,1.0] },
+      biasa: { phRanges: [4.0,4.5,5.0,5.5,6.0], rates:[4.0,3.0,2.5,2.0,1.0,1.0] },
+      pasir: { phRanges: [4.0,4.5,5.0,5.5,6.0], rates:[2.5,2.5,2.0,1.0,0.5,0.0] }
+    };
+    const $ = id => document.getElementById(id);
+    function safeNum(v, fallback=0) { const n = parseFloat(v); return (isNaN(n) ? fallback : n); }
+
+    function calculateRotiferFeed() {
+      const density = safeNum($('density').value, NaN);
+      const volumeLiters = safeNum($('volume').value, NaN);
+      const feedRate = safeNum($('feedType').value, NaN);
+      const out = $('rotifer-result');
+      if (!isFinite(density) || !isFinite(volumeLiters) || density < 0 || volumeLiters <= 0) {
+        out.innerHTML = '0.00 <span class="text-base font-medium">gram</span>'; return;
+      }
+      const volumeML = volumeLiters * 1000;
+      const totalRotifer = density * volumeML;
+      const feedRequired = (totalRotifer / 1_000_000) * feedRate;
+      out.innerHTML = `${Number.isFinite(feedRequired) ? feedRequired.toFixed(2) : '0.00'} <span class="text-base font-medium">gram</span>`;
+    }
+
+    function calculateArtemiaFeed() {
+      const stock = safeNum($('artemiaStock').value, NaN);
+      const rate = safeNum($('artemiaRate').value, NaN);
+      const hatchEff = safeNum($('hatchEff').value, NaN);
+      const out = $('artemia-result');
+      if (!isFinite(stock) || !isFinite(rate) || !isFinite(hatchEff) || stock <= 0 || rate <= 0 || hatchEff <= 0) {
+        out.innerHTML = '0.00 <span class="text-base font-medium">gram</span>'; return;
+      }
+      const totalNauplii = stock * rate;
+      const naupliiPerGram = hatchEff * 1_000_000;
+      const cystsNeeded = totalNauplii / naupliiPerGram;
+      out.innerHTML = `${Number.isFinite(cystsNeeded) ? cystsNeeded.toFixed(2) : '0.00'} <span class="text-base font-medium">gram</span>`;
+    }
+
+    function calculateStocking() {
+      let tankVolume = safeNum($('tankVolume').value, NaN);
+      const densityTarget = safeNum($('densityTarget').value, NaN);
+      const unit = $('unitConvert').value;
+      const phase = $('tankArea').value;
+      const out = $('stocking-result');
+      if (!isFinite(tankVolume) || !isFinite(densityTarget) || tankVolume <= 0 || densityTarget <= 0) {
+        out.innerHTML = '0 <span class="text-base font-medium">ekor</span>'; return;
+      }
+      if (unit === 'm3') tankVolume = tankVolume * 1000;
+      const maxDensity = (phase === 'larva') ? 50 : 10;
+      const actualDensity = Math.min(densityTarget, maxDensity);
+      const totalStock = Math.floor(tankVolume * actualDensity);
+      out.innerHTML = `${totalStock.toLocaleString()} <span class="text-base font-medium">ekor</span>`;
+    }
+
+    function calculateChemicals() {
+      const volumeLiters = safeNum($('chemVolume').value, NaN);
+      const targetPPM = safeNum($('targetPPM').value, NaN);
+      const out = $('chemical-result');
+      if (!isFinite(volumeLiters) || !isFinite(targetPPM) || volumeLiters <= 0 || targetPPM < 0) {
+        out.innerHTML = '0.00 <span class="text-base font-medium">gram</span>'; return;
+      }
+      const massGrams = (volumeLiters * targetPPM) / 1000;
+      out.innerHTML = `${massGrams.toFixed(2)} <span class="text-base font-medium">gram</span>`;
+    }
+
+    function getLimingRate(pH, soilType) {
+      const data = limingData[soilType] || limingData.biasa;
+      if (pH < 4.0) return data.rates[0];
+      if (pH > 6.0) return data.rates[5];
+      for (let i=0;i<data.phRanges.length;i++) {
+        if (pH <= data.phRanges[i]) return data.rates[i];
+      }
+      return 0.0;
+    }
+    function calculateLiming() {
+      const pondArea = safeNum($('pondArea').value, NaN);
+      const soilType = $('soilType').value;
+      const pH = safeNum($('pH').value, NaN);
+      const outRate = $('liming-result');
+      const outTotal = $('liming-total');
+      if (!isFinite(pondArea) || !isFinite(pH) || pondArea <= 0 || pH < 3.0 || pH > 8.0) {
+        outRate.innerHTML = '0.00 <span class="text-base font-medium">tan/Ha</span>';
+        outTotal.textContent = 'Jumlah Kapur Keseluruhan: 0.00 tan'; return;
+      }
+      const ratePerHa = getLimingRate(pH, soilType);
+      const total = ratePerHa * pondArea;
+      outRate.innerHTML = `${ratePerHa.toFixed(2)} <span class="text-base font-medium">tan/Ha</span>`;
+      outTotal.textContent = `Jumlah Kapur Keseluruhan: ${total.toFixed(2)} tan`;
+    }
+
+    function copyText(text) { return navigator.clipboard?.writeText(text).then(()=>true).catch(()=>false); }
+    function downloadCSV(filename, rows) {
+      const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      calculateRotiferFeed(); calculateArtemiaFeed(); calculateStocking(); calculateChemicals(); calculateLiming();
+      $('density').addEventListener('input', calculateRotiferFeed); $('volume').addEventListener('input', calculateRotiferFeed); $('feedType').addEventListener('change', calculateRotiferFeed);
+      $('artemiaStock').addEventListener('input', calculateArtemiaFeed); $('artemiaRate').addEventListener('input', calculateArtemiaFeed); $('hatchEff').addEventListener('input', calculateArtemiaFeed);
+      $('tankVolume').addEventListener('input', calculateStocking); $('densityTarget').addEventListener('input', calculateStocking); $('unitConvert').addEventListener('change', calculateStocking); $('tankArea').addEventListener('change', calculateStocking);
+      $('chemVolume').addEventListener('input', calculateChemicals); $('targetPPM').addEventListener('input', calculateChemicals); $('pondArea').addEventListener('input', calculateLiming); $('soilType').addEventListener('change', calculateLiming); $('pH').addEventListener('input', calculateLiming);
+
+      $('copy-rotifer').addEventListener('click', async () => { const ok = await copyText(`Rotifer feed: ${$('rotifer-result').textContent.trim()}`); alert(ok ? 'Disalin ke papan klip' : 'Gagal salin'); });
+      $('download-rotifer').addEventListener('click', () => downloadCSV('rotifer.csv', [['Density (ind/ml)','Volume (L)','Feed rate (g/1e6)','Result (g)'],[$('density').value,$('volume').value,$('feedType').value,$('rotifer-result').textContent.trim()]]));
+      $('copy-artemia').addEventListener('click', async () => { const ok = await copyText(`Artemia cysts needed: ${$('artemia-result').textContent.trim()}`); alert(ok ? 'Disalin ke papan klip' : 'Gagal salin'); });
+      $('download-artemia').addEventListener('click', () => downloadCSV('artemia.csv', [['Stock','Rate (nauplii/ind)','Hatch eff (juta/g)','Result (g)'],[$('artemiaStock').value,$('artemiaRate').value,$('hatchEff').value,$('artemia-result').textContent.trim()]]));
+    });
+  </script>
+</body>
+</html>
