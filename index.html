@@ -3,33 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Gate</title>
-    <script>
-        function checkCredentials() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            if (username === "admin" && password === "password123") {
-                document.getElementById("admin-area").style.display = "block";
-                document.getElementById("login-area").style.display = "none";
-            } else {
-                alert("Invalid credentials, please try again.");
-            }
+    <title>Admin Area</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
-    </script>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
-    <div id="login-area">
-        <h2>Admin Login</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" required>
-        <button onclick="checkCredentials()">Login</button>
+    <div class="container">
+        <h1>Welcome to Admin Area</h1>
+        <p>You are successfully logged in!</p>
+        <p>This is your protected admin dashboard.</p>
+        <button onclick="logout()">Logout</button>
     </div>
-    <div id="admin-area" style="display: none;">
-        <h1>Welcome to the Admin Area</h1>
-        <p>This is the protected content that is only visible to logged-in users.</p>
-    </div>
+
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('isLoggedIn')) {
+            // Redirect to login if not logged in
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            // Clear login
+            localStorage.removeItem('isLoggedIn');
+            // Redirect to login
+            window.location.href = 'login.html';
+        }
+    </script>
 </body>
 </html>
